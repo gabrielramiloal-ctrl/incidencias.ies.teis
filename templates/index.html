@@ -104,7 +104,14 @@
 
         .eliminar {
             background: #dc2626;
+            color: white;
+            text-decoration: none;
             padding: 7px 12px;
+            border-radius: 7px;
+            font-size: 14px;
+            display: inline-block;
+            cursor: pointer;
+            border: none;
         }
 
         .eliminar:hover {
@@ -128,17 +135,18 @@
 
     <main class="contenedor">
 
-        <!-- Formulario -->
+        <!-- Formulario conectado a Flask por POST -->
         <section class="tarjeta">
             <h2>Nueva incidencia</h2>
 
-            <form id="formIncidencia">
+            <form method="POST" action="/">
 
                 <div class="campo">
                     <label for="aula">Aula</label>
                     <input
                         type="text"
                         id="aula"
+                        name="aula"
                         placeholder="Ej. Aula 203"
                         required
                     >
@@ -149,6 +157,7 @@
                     <input
                         type="text"
                         id="usuario"
+                        name="usuario"
                         placeholder="Nombre del usuario"
                         required
                     >
@@ -158,6 +167,7 @@
                     <label for="descripcion">Descripción de la incidencia</label>
                     <textarea
                         id="descripcion"
+                        name="descripcion"
                         placeholder="Describe el problema..."
                         required
                     ></textarea>
@@ -170,7 +180,7 @@
             </form>
         </section>
 
-        <!-- Lista de incidencias -->
+        <!-- Lista de incidencias leídas desde MySQL -->
         <section class="tarjeta">
             <h2>Incidencias registradas</h2>
 
@@ -185,12 +195,23 @@
                         </tr>
                     </thead>
 
-                    <tbody id="listaIncidencias">
+                    <tbody>
+                        {% for inc in incidencias %}
+                        <tr>
+                            <td>{{ inc.aula }}</td>
+                            <td>{{ inc.usuario }}</td>
+                            <td>{{ inc.descripcion }}</td>
+                            <td>
+                                <a href="/eliminar/{{ inc.id }}" class="eliminar">Eliminar</a>
+                            </td>
+                        </tr>
+                        {% else %}
                         <tr>
                             <td colspan="4" class="sin-incidencias">
                                 No hay incidencias registradas.
                             </td>
                         </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
@@ -198,59 +219,5 @@
 
     </main>
 
-    <script>
-        const formulario = document.getElementById("formIncidencia");
-        const lista = document.getElementById("listaIncidencias");
-
-        formulario.addEventListener("submit", function(event) {
-            event.preventDefault();
-
-            const aula = document.getElementById("aula").value;
-            const usuario = document.getElementById("usuario").value;
-            const descripcion = document.getElementById("descripcion").value;
-
-            // Eliminar mensaje de "no hay incidencias"
-            const mensaje = lista.querySelector(".sin-incidencias");
-
-            if (mensaje) {
-                mensaje.parentElement.remove();
-            }
-
-            // Crear nueva fila
-            const fila = document.createElement("tr");
-
-            fila.innerHTML = `
-                <td>${aula}</td>
-                <td>${usuario}</td>
-                <td>${descripcion}</td>
-                <td>
-                    <button class="eliminar" onclick="eliminarIncidencia(this)">
-                        Eliminar
-                    </button>
-                </td>
-            `;
-
-            lista.appendChild(fila);
-
-            // Limpiar formulario
-            formulario.reset();
-        });
-
-        function eliminarIncidencia(boton) {
-            boton.closest("tr").remove();
-
-            if (lista.children.length === 0) {
-                lista.innerHTML = `
-                    <tr>
-                        <td colspan="4" class="sin-incidencias">
-                            No hay incidencias registradas.
-                        </td>
-                    </tr>
-                `;
-            }
-        }
-    </script>
-
 </body>
 </html>
-
