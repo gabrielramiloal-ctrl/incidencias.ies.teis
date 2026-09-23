@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Incidencias</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #333;
+        }
+
+        header {
+            background: #2563eb;
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .contenedor {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .tarjeta {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #1e40af;
+        }
+
+        .campo {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+            font-size: 15px;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .tabla-contenedor {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #eff6ff;
+            color: #1e40af;
+        }
+
+        .eliminar {
+            background: #dc2626;
+            padding: 7px 12px;
+        }
+
+        .eliminar:hover {
+            background: #b91c1c;
+        }
+
+        .sin-incidencias {
+            text-align: center;
+            color: #777;
+            padding: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Gestión de Incidencias</h1>
+        <p>Registra y consulta las incidencias de las aulas</p>
+    </header>
+
+    <main class="contenedor">
+
+        <!-- Formulario -->
+        <section class="tarjeta">
+            <h2>Nueva incidencia</h2>
+
+            <form id="formIncidencia">
+
+                <div class="campo">
+                    <label for="aula">Aula</label>
+                    <input
+                        type="text"
+                        id="aula"
+                        placeholder="Ej. Aula 203"
+                        required
+                    >
+                </div>
+
+                <div class="campo">
+                    <label for="usuario">Usuario</label>
+                    <input
+                        type="text"
+                        id="usuario"
+                        placeholder="Nombre del usuario"
+                        required
+                    >
+                </div>
+
+                <div class="campo">
+                    <label for="descripcion">Descripción de la incidencia</label>
+                    <textarea
+                        id="descripcion"
+                        placeholder="Describe el problema..."
+                        required
+                    ></textarea>
+                </div>
+
+                <button type="submit">
+                    Registrar incidencia
+                </button>
+
+            </form>
+        </section>
+
+        <!-- Lista de incidencias -->
+        <section class="tarjeta">
+            <h2>Incidencias registradas</h2>
+
+            <div class="tabla-contenedor">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Aula</th>
+                            <th>Usuario</th>
+                            <th>Descripción</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="listaIncidencias">
+                        <tr>
+                            <td colspan="4" class="sin-incidencias">
+                                No hay incidencias registradas.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        const formulario = document.getElementById("formIncidencia");
+        const lista = document.getElementById("listaIncidencias");
+
+        formulario.addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const aula = document.getElementById("aula").value;
+            const usuario = document.getElementById("usuario").value;
+            const descripcion = document.getElementById("descripcion").value;
+
+            // Eliminar mensaje de "no hay incidencias"
+            const mensaje = lista.querySelector(".sin-incidencias");
+
+            if (mensaje) {
+                mensaje.parentElement.remove();
+            }
+
+            // Crear nueva fila
+            const fila = document.createElement("tr");
+
+            fila.innerHTML = `
+                <td>${aula}</td>
+                <td>${usuario}</td>
+                <td>${descripcion}</td>
+                <td>
+                    <button class="eliminar" onclick="eliminarIncidencia(this)">
+                        Eliminar
+                    </button>
+                </td>
+            `;
+
+            lista.appendChild(fila);
+
+            // Limpiar formulario
+            formulario.reset();
+        });
+
+        function eliminarIncidencia(boton) {
+            boton.closest("tr").remove();
+
+            if (lista.children.length === 0) {
+                lista.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="sin-incidencias">
+                            No hay incidencias registradas.
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+    </script>
+
+</body>
+</html>
+

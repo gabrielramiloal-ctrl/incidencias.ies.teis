@@ -43,7 +43,7 @@ flush privileges;
 -- Insertar datos
 ```
 
-## Configuracion de Git/giuthub
+## Configuracion de git/giuthub
 
 1. Crear repositorio local, añadir archivos y commit
 ``` bash
@@ -51,7 +51,7 @@ git init
 git add .
 git commit -m "comentario"
 ```
-2. Crear cuenat github, crear repositerio en github
+2. Crear cuenat github, crear repositorio en github
 3. Conectar repositorio local con remoto
 ``` bash 
 git remote add origin https://github.com/gabrielramiloal-ctrl/incidencias.ies.teis.git
